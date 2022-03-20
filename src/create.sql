@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION table_columns_info(name text, schema text) RETURNS VOID AS
+CREATE OR REPLACE FUNCTION columns_info(name text, schema text) RETURNS VOID AS
 $$
 DECLARE
     i record;
@@ -27,7 +27,7 @@ BEGIN
 end;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION schemas_table(name text) RETURNS VOID AS
+CREATE OR REPLACE FUNCTION get_schemas(name text) RETURNS VOID AS
 $$
 DECLARE
     col record;
