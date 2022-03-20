@@ -1,13 +1,13 @@
 \echo 'Введите название таблицы: '
-\prompt 'Введите название таблицы: ' name_table
+\prompt 'Введите название таблицы: ' table
 
-\set name_tab '\'' :name_table '\''
+\set table '\'' :table '\''
 
-SELECT get_schemas(:name_tab);
+SELECT get_schemas(:table);
 
 \echo 'Введите название схемы: '
-\prompt 'Введите название схемы: ' schema_name_cur
+\prompt 'Введите название схемы: ' schema
 
-\set name_shem '\'' :schema_name_cur '\''
+\set schema '\'' :schema '\''
 
-SELECT columns_info(:name_tab, :name_shem);
+SELECT columns_info(:table, :schema);
