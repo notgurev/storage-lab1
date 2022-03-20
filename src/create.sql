@@ -27,33 +27,32 @@ BEGIN
 end;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION schemas_table(table_name text) RETURNS VOID AS
+CREATE OR REPLACE FUNCTION schemas_table(name text) RETURNS VOID AS
 $$
 DECLARE
-    col         record;
-    table_count int;
+    col record;
 BEGIN
-    table_count := (SELECT COUNT(DISTINCT nspname)
-                    FROM pg_class class
-                             JOIN pg_namespace ns on class.relnamespace = ns.oid
-                    WHERE relname = table_name);
-    IF
-        table_count < 1 THEN
-        RAISE EXCEPTION 'Таблица "%" не найдена!', table_name;
+    IF (SELECT COUNT(DISTINCT nspname)
+        FROM pg_class class
+                 JOIN pg_namespace ns on class.relnamespace = ns.oid
+        WHERE relname = name) < 1
+    THEN
+        RAISE EXCEPTION 'Таблицы "%" не существует!', name;
     ELSE
         RAISE NOTICE ' ';
-        RAISE NOTICE 'Выберите схему, с которой вы хотите получить данные: ';
+        RAISE NOTICE 'Схемы с таблицей %: ', name;
 
         FOR col in (
             SELECT space.nspname namespace
             FROM pg_class tab
                      JOIN pg_namespace space on tab.relnamespace = space.oid
-            WHERE tab.relname = table_name
+            WHERE tab.relname = name
             ORDER BY space.nspname
         )
             LOOP
                 RAISE NOTICE '%', col.namespace;
             END LOOP;
+
         RAISE NOTICE ' ';
     END IF;
 END
