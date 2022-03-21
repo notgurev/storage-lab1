@@ -1,0 +1,1 @@
+psql -h pg -d studs -f noprompt.sql -v ON_ERROR_STOP=1 2>&1 | sed 's|.*NOTICE:  ||g'
