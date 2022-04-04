@@ -1,22 +1,32 @@
 #!/bin/bash
 set -e
 
-read -p 'Название базы данных: ' -r db
+while [ "$db" == "" ]; do
+  read -p 'Название базы данных: ' -r db
+  if [ "$db" == "" ]; then
+    echo "Вы ввели пустую строку. Введите корректное значение!"
+  fi
+done
 
 # create functions
 bash create.sh "$db"
 
-read -p 'Название таблицы: ' -r input
+while [ "$input" == "" ]; do
+  read -p 'Название таблицы: ' -r input
+  if [ "$input" == "" ]; then
+    echo "Вы ввели пустую строку. Введите корректное значение!"
+  fi
+done
 
 IFS='.' read -r -a array <<<"$input"
-
 res="${input//[^\.]/}"
+
 if [[ "${#res}" == "2" ]]; then
   table="${array[2]}"
   schema="${array[1]}"
   db_="${array[0]}"
   if [ "$db" != "$db_" ]; then
-    echo "Database names don't match, exiting..."
+    echo "Ошибка: названия баз данных не совпадают, завершение работы..."
     exit
   fi
   export table
@@ -32,5 +42,5 @@ elif [[ "${#res}" == "0" ]]; then
   export input
   bash prompt.sh "$db"
 else
-  echo "Wrong format of input"
+  echo "Ошибка: некорректный формат названия таблицы, завершение работы..."
 fi
