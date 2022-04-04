@@ -1,1 +1,0 @@
-psql -h pg -d studs -f script.sql -v ON_ERROR_STOP=1 2>&1 | sed 's|.*NOTICE:  ||g'
