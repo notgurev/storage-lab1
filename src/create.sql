@@ -1,15 +1,20 @@
 CREATE OR REPLACE FUNCTION columns_info(name text, schema text) RETURNS VOID AS
 $$
 DECLARE
-    i     record;
-    count boolean;
-    fullName text;
+    i           record;
+    table_count int;
 BEGIN
-    fullName := schema || '.' || name;
-    SELECT to_regclass(fullName) into count;
-    if count is null then
-        raise exception 'Таблица "%s" не существует', fullName;
+    SELECT COUNT(DISTINCT nspname)
+    FROM pg_class tab
+             JOIN pg_namespace space on tab.relnamespace = space.oid
+    WHERE relname = name
+      and space.nspname = schema
+    INTO table_count;
+
+    IF table_count < 1 THEN
+        RAISE EXCEPTION 'Таблица "%" не найдена в схеме "%"!', name, schema;
     end if;
+
     raise notice ' ';
     raise notice 'Таблица: %', name;
     raise notice ' ';
@@ -31,7 +36,7 @@ BEGIN
                 i.type, CASE WHEN i.attnotnull = true THEN 'Not null' ELSE '' END;
             RAISE NOTICE '% Commen  :  "%"', RPAD('⠀', 22, ' '), CASE WHEN i.description is null THEN '' ELSE i.description END;
         end loop;
-end ;
+end;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION get_schemas(name text) RETURNS VOID AS
