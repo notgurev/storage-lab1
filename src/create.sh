@@ -1,1 +1,1 @@
-psql -h pg -d studs -f create.sql
+psql -h pg -d "$1" -f create.sql -v ON_ERROR_STOP=1
